@@ -1,0 +1,21 @@
+Metadata-Version: 2.1
+Name: bot
+Version: 0.0.1
+Summary: Bot aldemarromel :D
+Requires-Python: >=3.1
+Description-Content-Type: text/markdown
+Requires-Dist: RPi.GPIO>=0.7.1
+Requires-Dist: mediapipe
+Requires-Dist: protobuf>=3.20.0
+Requires-Dist: pynmea2
+Requires-Dist: pyserial
+
+To activate venv:
+```bash
+source bin/activate
+```
+
+To install dependencies:
+```bash
+python -m pip install .
+```

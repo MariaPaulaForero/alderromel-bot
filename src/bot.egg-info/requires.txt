@@ -1,0 +1,5 @@
+RPi.GPIO>=0.7.1
+mediapipe
+protobuf>=3.20.0
+pynmea2
+pyserial
