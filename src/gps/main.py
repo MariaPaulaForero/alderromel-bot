@@ -16,3 +16,8 @@ def get_gps_location():
 			'lng': newmsg.longitude
 		}
 		return dic
+
+	return {
+                        'lat': 0,
+                        'lng': 0
+                }

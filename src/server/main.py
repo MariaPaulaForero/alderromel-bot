@@ -4,7 +4,7 @@ from fastapi import FastAPI, WebSocket
 from fastapi.testclient import TestClient
 from geojson import Point
 
-from gps import get_gps_location
+from gps.main import get_gps_location
 
 app = FastAPI()
 
@@ -30,17 +30,17 @@ def test_websocket():
     with client.websocket_connect("/ws") as websocket:
         data = websocket.receive_json()
         return data
-    
+
 @app.websocket('/current-location')
 async def current_location(websocket: WebSocket):
     await websocket.accept()
     # Raspberry gps
     gps_location = get_gps_location()
-    
-    gps_point = Point((gps_location.lng, gps_location.lat))
-        
+
+    gps_point = Point((gps_location['lng'], gps_location['lat']))
+
     await websocket.send_json(gps_point)
-    
+
     await websocket.close()
 
 @app.get('/test-current-location')
