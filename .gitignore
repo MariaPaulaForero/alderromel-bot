@@ -1,8 +1,11 @@
 build/
 bin/
-/lib64/
+lib64
 include/
 pyvenv.cfg
 build/
 lib/
+share/
 __pycache__
+.venv
+src/bot.egg-info
