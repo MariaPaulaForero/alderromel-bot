@@ -18,3 +18,4 @@ dependencies = [
 requires-python = ">= 3.11"
 
 [project.scripts]
+get-gps-location = "gps.main:get_gps_location"

@@ -7,10 +7,10 @@ def get_gps_location():
 	port="/dev/ttyAMA0"
 	ser=serial.Serial(port, baudrate=9600, timeout=0.5)
 	dataout = pynmea2.NMEAStreamReader()
-	newdata = ser.readline()
+	newdata = str(ser.readline(), errors="replace")
 
 	print(newdata)
-	if (newdata[0:6] == "$GPGGA"):
+	if "$GNGGA" in newdata:
 		newmsg=pynmea2.parse(newdata)
 		dic = {
 			'lat': newmsg.latitude,
