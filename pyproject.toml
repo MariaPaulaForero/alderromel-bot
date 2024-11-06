@@ -15,6 +15,6 @@ dependencies = [
 	"fastapi[standard]",
 	"geojson"
 ]
-requires-python = ">= 3.1"
+requires-python = ">= 3.11"
 
 [project.scripts]

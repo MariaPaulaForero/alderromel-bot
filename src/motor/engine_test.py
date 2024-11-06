@@ -62,7 +62,7 @@ def stop():
     GPIO.output(IN2, GPIO.LOW)
     GPIO.output(IN3, GPIO.LOW)
     GPIO.output(IN4, GPIO.LOW)
-    
+
 def turn_left():
 	GPIO.output(IN1, GPIO.LOW)
 	GPIO.output(IN2, GPIO.HIGH)
@@ -94,7 +94,7 @@ if __name__ == "__main__":
             else:
                 stop()
             sleep(0.1)  # Pequeña pausa para evitar sobrecargar la CPU'''
-            forward(100, 100)
+            forward()
 
 
     except KeyboardInterrupt:

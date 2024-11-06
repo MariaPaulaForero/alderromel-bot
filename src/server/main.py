@@ -1,4 +1,5 @@
 from typing import Union
+import asyncio
 
 from fastapi import FastAPI, WebSocket
 from fastapi.testclient import TestClient
@@ -6,6 +7,7 @@ from geojson import Point
 from motor.engine_test import backward, forward, turn_left, turn_right, stop
 from pydantic import BaseModel
 from gps.main import get_gps_location
+from camera.main import get_image
 
 app = FastAPI()
 
@@ -52,6 +54,7 @@ def stop_motors():
 # Example usage in your FastAPI endpoint
 @app.post("/control-robot")
 async def control_robot(command: Command):
+    print(command)
     global motor_thread
     action = command.action.lower()
 
@@ -88,13 +91,28 @@ def test_websocket():
 async def current_location(websocket: WebSocket):
     await websocket.accept()
     # Raspberry gps
-    gps_location = get_gps_location()
 
-    gps_point = Point((gps_location['lng'], gps_location['lat']))
+    while True:
+        gps_location = get_gps_location()
 
-    await websocket.send_json(gps_point)
+        gps_point = Point((gps_location['lng'], gps_location['lat']))
+            
+        await asyncio.sleep(1)
+        await websocket.send_json(gps_point)
 
-    await websocket.close()
+@app.websocket("/kamavinga")
+async def websocket_kamavinga(websocket: WebSocket):
+    await websocket.accept()
+    
+    width, height = 640, 500
+
+    try:
+        while True:
+            image = get_image()
+            await websocket.send_text(image)
+            await asyncio.sleep(0.05)  # Controla la tasa de envío
+    except Exception as e:
+        print(f"Error: {e}")                
 
 @app.get('/test-current-location')
 def test_current_location():
