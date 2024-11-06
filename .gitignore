@@ -9,3 +9,4 @@ share/
 __pycache__
 .venv
 src/bot.egg-info
+Scripts/

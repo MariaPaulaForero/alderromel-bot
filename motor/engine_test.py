@@ -36,14 +36,14 @@ pwm_B = GPIO.PWM(ENB, 100)  # Frecuencia de 100 Hz para el motor B
 pwm_A.start(0)  # Iniciar el PWM del motor A con velocidad 0%
 pwm_B.start(0)  # Iniciar el PWM del motor B con velocidad 0%
 
-def set_speed(motor_pwm, speed):
-    """Configurar la velocidad del motor."""
-    motor_pwm.ChangeDutyCycle(speed)
+speed_A = 100
+speed_B = 100
 
-def forward(speed_A, speed_B):
+pwm_A.ChangeDutyCycle(speed_A)
+pwm_B.ChangeDutyCycle(speed_B)
+
+def forward():
     """Set motors to move forward."""
-    set_speed(pwm_A, speed_A)
-    set_speed(pwm_B, speed_B)
     GPIO.output(IN1, GPIO.HIGH)
     GPIO.output(IN2, GPIO.LOW)
     GPIO.output(IN3, GPIO.HIGH)
@@ -51,8 +51,6 @@ def forward(speed_A, speed_B):
 
 def backward():
     """Set motors to move backward."""
-    set_speed(pwm_A, 100)
-    set_speed(pwm_B, 100)
     GPIO.output(IN1, GPIO.LOW)
     GPIO.output(IN2, GPIO.HIGH)
     GPIO.output(IN3, GPIO.LOW)
@@ -60,24 +58,18 @@ def backward():
 
 def stop():
     """Stop the motors."""
-    set_speed(pwm_A, 0)
-    set_speed(pwm_B, 0)
     GPIO.output(IN1, GPIO.LOW)
     GPIO.output(IN2, GPIO.LOW)
     GPIO.output(IN3, GPIO.LOW)
     GPIO.output(IN4, GPIO.LOW)
     
-def turn_left(speed_A, speed_B):
-	set_speed(pwm_A, speed_A)
-	set_speed(pwm_B, speed_B)
+def turn_left():
 	GPIO.output(IN1, GPIO.LOW)
 	GPIO.output(IN2, GPIO.HIGH)
 	GPIO.output(IN3, GPIO.HIGH)
 	GPIO.output(IN4, GPIO.LOW)
 
-def turn_right(speed_A, speed_B):
-	set_speed(pwm_A, speed_A)
-	set_speed(pwm_B, speed_B)
+def turn_right():
 	GPIO.output(IN1, GPIO.HIGH)
 	GPIO.output(IN2, GPIO.LOW)
 	GPIO.output(IN3, GPIO.HIGH)
@@ -85,26 +77,27 @@ def turn_right(speed_A, speed_B):
 
 print("FIUMMMMMMMMMMMMMMMMMMBA")
 
-try:
-    #print("Usa las flechas del teclado para controlar el robot. Presiona 'q' para salir.")
-    while True:
-        '''if keyboard.is_pressed('up'):
-            forward(50, 50)
-        elif keyboard.is_pressed('down'):
-            backward(50, 50)
-        elif keyboard.is_pressed('left'):
-            turn_left(50, 50)
-        elif keyboard.is_pressed('right'):
-            turn_right(50, 50)
-        elif keyboard.is_pressed('q'):
-            break
-        else:
-            stop()
-        sleep(0.1)  # Pequeña pausa para evitar sobrecargar la CPU'''
-        forward(100, 100)
+if __name__ == "__main__":
+    try:
+        #print("Usa las flechas del teclado para controlar el robot. Presiona 'q' para salir.")
+        while True:
+            '''if keyboard.is_pressed('up'):
+                forward(50, 50)
+            elif keyboard.is_pressed('down'):
+                backward(50, 50)
+            elif keyboard.is_pressed('left'):
+                turn_left(50, 50)
+            elif keyboard.is_pressed('right'):
+                turn_right(50, 50)
+            elif keyboard.is_pressed('q'):
+                break
+            else:
+                stop()
+            sleep(0.1)  # Pequeña pausa para evitar sobrecargar la CPU'''
+            forward(100, 100)
 
 
-except KeyboardInterrupt:
-    pass  # Allow exit with Ctrl+C
-finally:
-    GPIO.cleanup()  # Clean up GPIO settings
+    except KeyboardInterrupt:
+        pass  # Allow exit with Ctrl+C
+    finally:
+        GPIO.cleanup()  # Clean up GPIO settings
