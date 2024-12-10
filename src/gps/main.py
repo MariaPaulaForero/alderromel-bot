@@ -7,7 +7,8 @@ import pynmea2
 
 last_known_location={
 	'lat': 0,
-	'lng': 0
+	'lng': 0,
+	'orientation': 0
 }
 
 def get_gps_location():
@@ -18,12 +19,13 @@ def get_gps_location():
 	try:
 		line=sio.readline()
 		msg=pynmea2.parse(line)
+		global last_known_location
 		dic={
 			'lat': msg.latitude,
-			'lng': msg.longitude
+			'lng': msg.longitude,
+			'orientation': msg.true_course if msg.sentence_type == 'RMC' else last_known_location['orientation']
 		}
 		print(dic)
-		global last_known_location
 		last_known_location=dic
 		return dic
 	except serial.SerialException as e:
