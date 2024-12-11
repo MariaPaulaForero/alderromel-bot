@@ -8,7 +8,8 @@ import pynmea2
 last_known_location={
 	'lat': 0,
 	'lng': 0,
-	'orientation': 0
+	'orientation': 0,
+	'speed': 0
 }
 
 def get_gps_location():
@@ -23,7 +24,8 @@ def get_gps_location():
 		dic={
 			'lat': msg.latitude,
 			'lng': msg.longitude,
-			'orientation': msg.true_course if msg.sentence_type == 'RMC' else last_known_location['orientation']
+			'orientation': msg.true_course if msg.sentence_type == 'RMC' else last_known_location['orientation'],
+			'speed': msg.spd_over_grnd if msg.sentence_type == 'RMC' else last_known_location['speed']
 		}
 		print(dic)
 		last_known_location=dic
