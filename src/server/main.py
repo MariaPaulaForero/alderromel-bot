@@ -32,7 +32,7 @@ import time
 running = False
 motor_thread = None
 movement_mode = "control" # control, dog, map, path
-movement_speed = 0 # esta es la velocidad teorica a la que podemos ajustar el robot desde el frontend
+movement_speed = 100 # esta es la velocidad teorica a la que podemos ajustar el robot desde el frontend
 
 def control_motors(action):
     global running
@@ -40,13 +40,13 @@ def control_motors(action):
 
     while running:
         if action == "forward":
-            forward()
+            forward(movement_speed, movement_speed)
         elif action == "backward":
-            backward()
+            backward(movement_speed, movement_speed)
         elif action == "turn_left":
-            turn_left()
+            turn_left(movement_speed, 0)
         elif action == "turn_right":
-            turn_right()
+            turn_right(0, movement_speed)
         elif action == "stop":
             #stop()
             stop_motors()

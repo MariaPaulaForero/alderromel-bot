@@ -63,10 +63,17 @@ while True:
     bottom_right_max = (camera_center[0] + max_square_size // 2, camera_center[1] + max_square_size // 2)
     cv2.rectangle(frame, top_left_max, bottom_right_max, (255, 255, 255), 2)  # Cuadrado grande en blanco
 
+    print(len(cnts))
+    
+    if(len(cnts) == 0):
+        stop()
+
     if len(cnts) > 0:
         c = max(cnts, key=cv2.contourArea)
         ((x, y), radius) = cv2.minEnclosingCircle(c)
-
+        
+        
+        
         if radius > 10:
             # Calcular el diámetro
             diameter_in_pixels = radius * 2
@@ -88,13 +95,18 @@ while True:
 
             # Determinar la posición de la pelota en relación al centro de la cámara
             if time.time() - last_print_time > print_interval:
-
+                
+                print(distance)
+                print(diameter_in_pixels)
+                
                 if x < camera_center[0] - 50 or x > camera_center[0] + 50:
 
                     if x < camera_center[0] - 50:  # Si la pelota está muy a la izquierda
                         turn_left()
+                        print("Auri te odio")
                     if x > camera_center[0] + 50:  # Si la pelota está muy a la derecha
                         turn_right()
+                        print("Paula te odio")
                 else:
                     if distance < 1.25 and distance > 0.50:
                         print("Listo para responder al color")
@@ -112,12 +124,13 @@ while True:
                         print(distance)
                         print(diameter_in_pixels)
                         forward()
-                        
+                    
+                             
                 last_print_time = time.time()
 
     # Mostrar los resultados
-    # cv2.imshow("Frame", frame)
-    # cv2.imshow("Mask", mask)
+    cv2.imshow("Frame", frame)
+    cv2.imshow("Mask", mask)
 
     key = cv2.waitKey(1) & 0xFF
 
