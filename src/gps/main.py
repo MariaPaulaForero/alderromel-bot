@@ -21,6 +21,8 @@ def get_gps_location():
 		line=sio.readline()
 		msg=pynmea2.parse(line)
 		global last_known_location
+		if msg.sentence_type == 'RMC':
+			print('Mensaje: ' + msg)
 		dic={
 			'lat': msg.latitude,
 			'lng': msg.longitude,
