@@ -4,15 +4,40 @@ import serial
 import time
 import string
 import pynmea2
+from constants import is_simulation_mode
+import random
+
 
 last_known_location={
-	'lat': 0,
-	'lng': 0,
+	'lat': 8.35122,
+	'lng': -62.64102,
 	'orientation': 0,
 	'speed': 0
 }
 
+def generate_simulated_gps_update():
+    # Variación controlada
+    latitude_variance = (random.random() - 0.5) * 0.0005  # Variación controlada para latitud
+    longitude_variance = (random.random() - 0.5) * 0.0005  # Variación controlada para longitud
+    orientation_variance = (random.random() - 0.5) * 5  # Variación controlada para orientación
+    speed_variance = (random.random() - 0.5) * 0.1  # Variación controlada para velocidad
+
+    # Actualiza las coordenadas y la velocidad con una variación suave
+    last_known_location['lat'] += latitude_variance
+    last_known_location['lng'] += longitude_variance
+    last_known_location['orientation'] += orientation_variance
+    last_known_location['speed'] += speed_variance
+
+    # Asegúrate de que los valores sean razonables
+    last_known_location['speed'] = max(0, last_known_location['speed'])
+    last_known_location['orientation'] = (last_known_location['orientation'] + 360) % 360  # Mantén la orientación entre 0 y 360
+
+    return last_known_location
+
 def get_gps_location():
+	if (is_simulation_mode):
+		return generate_simulated_gps_update()
+
 	port="/dev/ttyAMA0"
 	ser=serial.Serial(port, baudrate=9600, timeout=0.5)
 	sio= io.TextIOWrapper(io.BufferedRWPair(ser, ser))
