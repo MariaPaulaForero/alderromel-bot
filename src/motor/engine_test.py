@@ -79,7 +79,7 @@ print("FIUMMMMMMMMMMMMMMMMMMBA")
 try:
     #print("Usa las flechas del teclado para controlar el robot. Presiona 'q' para salir.")
     while True:
-        forward(50, 50)
+        forward()
    
 except KeyboardInterrupt:
     pass  # Allow exit with Ctrl+C
