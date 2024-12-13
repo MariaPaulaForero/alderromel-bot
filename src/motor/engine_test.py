@@ -75,26 +75,14 @@ def turn_left(speed_A=100, speed_B=0):
 	GPIO.output(IN4, GPIO.LOW)
 print("FIUMMMMMMMMMMMMMMMMMMBA")
 
-'''
+
 try:
     #print("Usa las flechas del teclado para controlar el robot. Presiona 'q' para salir.")
     while True:
-        if keyboard.is_pressed('up'):
-            forward(50, 50)
-        elif keyboard.is_pressed('down'):
-            backward(50, 50)
-        elif keyboard.is_pressed('left'):
-            turn_left(50, 50)
-        elif keyboard.is_pressed('right'):
-            turn_right(50, 50)
-        elif keyboard.is_pressed('q'):
-            break
-        else:
-            stop()
-        sleep(0.1)  # Pequeña pausa para evitar sobrecargar la CPU
-        turn_left(100, 100)
+        forward(50, 50)
+   
 except KeyboardInterrupt:
     pass  # Allow exit with Ctrl+C
 finally:
     GPIO.cleanup()  # Clean up GPIO settings
-'''
+
