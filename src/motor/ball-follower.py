@@ -92,9 +92,9 @@ while True:
                 if x < camera_center[0] - 50 or x > camera_center[0] + 50:
 
                     if x < camera_center[0] - 50:  # Si la pelota está muy a la izquierda
-                        turn_left()
+                        turn_left(50,50)
                     if x > camera_center[0] + 50:  # Si la pelota está muy a la derecha
-                        turn_right()
+                        turn_right(50,50)
                 else:
                     if distance < 1.25 and distance > 0.50:
                         print("Listo para responder al color")
@@ -105,13 +105,13 @@ while True:
                         print("Atrás")
                         print(distance)
                         print(diameter_in_pixels)
-                        backward()
+                        backward(50, 50)
 
                     if distance > 1.25:
                         print("Adelante")
                         print(distance)
                         print(diameter_in_pixels)
-                        forward()
+                        forward(50, 50)
                         
                 last_print_time = time.time()
 
