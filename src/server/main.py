@@ -1,16 +1,16 @@
 from typing import Union
 import asyncio
 
+
 from fastapi import FastAPI, WebSocket
 from fastapi.testclient import TestClient
 from geojson import Point
-from motor.engine_test import backward, forward, turn_left, turn_right, stop
 from pydantic import BaseModel
 from gps.main import get_gps_location
 from camera.main import get_image
+from constants import is_simulation_mode, simulated_base64_image
 
 app = FastAPI()
-
 
 class Command(BaseModel):
     action: str
@@ -19,12 +19,14 @@ class Command(BaseModel):
 def read_root():
     return {"Hello": "World"}
 
+
 import threading
 import time
 
 # Global variable to control the motor state
 running = False
 motor_thread = None
+
 
 def control_motors(action):
     global running
@@ -46,17 +48,24 @@ def control_motors(action):
 
         time.sleep(0.1)  # Adjust the sleep time as needed
 
+
 def stop_motors():
     global running
     running = False
     stop()  # Ensure motors are stopped when exiting
 
+
 # Example usage in your FastAPI endpoint
 @app.post("/control-robot")
 async def control_robot(command: Command):
+    print("control_robot")
     print(command)
+
     global motor_thread
     action = command.action.lower()
+
+    if (is_simulation_mode):
+        return {"status": "success", "action": action}
 
     # Stop any ongoing motor control before starting a new one
     if motor_thread is not None and motor_thread.is_alive():
@@ -69,23 +78,6 @@ async def control_robot(command: Command):
 
     return {"status": "success", "action": action}
 
-
-@app.get("/items/{item_id}")
-def read_item(item_id: int, q: Union[str, None] = None):
-    return {"item_id": item_id, "q": q}
-
-@app.websocket('/ws')
-async def websocket(websocket: WebSocket):
-    await websocket.accept()
-    await websocket.send_json({ "msg": "Hello WebSocket" })
-    await websocket.close()
-
-@app.get('/test-ws')
-def test_websocket():
-    client = TestClient(app)
-    with client.websocket_connect("/ws") as websocket:
-        data = websocket.receive_json()
-        return data
 
 @app.websocket('/current-location')
 async def current_location(websocket: WebSocket):
@@ -100,7 +92,7 @@ async def current_location(websocket: WebSocket):
         await asyncio.sleep(1)
         await websocket.send_json(gps_point)
 
-@app.websocket("/kamavinga")
+@app.websocket("/camera")
 async def websocket_kamavinga(websocket: WebSocket):
     await websocket.accept()
     
@@ -113,10 +105,3 @@ async def websocket_kamavinga(websocket: WebSocket):
             await asyncio.sleep(0.05)  # Controla la tasa de envío
     except Exception as e:
         print(f"Error: {e}")                
-
-@app.get('/test-current-location')
-def test_current_location():
-    client = TestClient(app)
-    with client.websocket_connect("/current-location") as websocket:
-        data = websocket.receive_json()
-        return data

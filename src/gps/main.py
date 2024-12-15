@@ -4,6 +4,7 @@ import serial
 import time
 import string
 import pynmea2
+from constants import is_simulation_mode
 
 last_known_location={
 	'lat': 0,
@@ -13,6 +14,14 @@ last_known_location={
 }
 
 def get_gps_location():
+	if (is_simulation_mode):
+		return {
+			'lat': 8.35122,
+			'lng': -62.64102,
+			'orientation': 90,
+			'speed': 1
+		}
+
 	port="/dev/ttyAMA0"
 	ser=serial.Serial(port, baudrate=9600, timeout=0.5)
 	sio= io.TextIOWrapper(io.BufferedRWPair(ser, ser))
