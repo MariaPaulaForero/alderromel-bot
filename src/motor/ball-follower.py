@@ -129,8 +129,8 @@ while True:
                 last_print_time = time.time()
 
     # Mostrar los resultados
-    cv2.imshow("Frame", frame)
-    cv2.imshow("Mask", mask)
+    # cv2.imshow("Frame", frame)
+    # cv2.imshow("Mask", mask)
 
     key = cv2.waitKey(1) & 0xFF
 

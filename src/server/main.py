@@ -9,6 +9,7 @@ from pydantic import BaseModel
 from gps.main import get_gps_location
 from camera.main import get_image
 from constants import is_simulation_mode, simulated_base64_image
+from motor.engine_test import backward, forward, turn_left, turn_right, stop
 
 app = FastAPI()
 
