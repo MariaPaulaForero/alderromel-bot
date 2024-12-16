@@ -90,9 +90,13 @@ async def current_location(websocket: WebSocket):
         gps_point = Point((gps_location['lng'], gps_location['lat']))
             
         await asyncio.sleep(1)
-        await websocket.send_json(gps_point)
+        await websocket.send_json({
+            "coordinates": gps_point,
+            "orientation": gps_location['orientation'],
+            "speed": gps_location['speed']
+        })
 
-@app.websocket("/camera")
+@app.websocket("/socket-camera")
 async def websocket_kamavinga(websocket: WebSocket):
     await websocket.accept()
     
