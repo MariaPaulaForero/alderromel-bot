@@ -73,16 +73,45 @@ def turn_left(speed_A=100, speed_B=0):
 	GPIO.output(IN2, GPIO.LOW)
 	GPIO.output(IN3, GPIO.LOW)
 	GPIO.output(IN4, GPIO.LOW)
+
+def turn_right_90(speed_A=0, speed_B=100):
+	set_speed(pwm_A, speed_A)
+	set_speed(pwm_B, speed_B)
+	GPIO.output(IN1, GPIO.LOW)
+	GPIO.output(IN2, GPIO.LOW)
+	GPIO.output(IN3, GPIO.HIGH)
+	GPIO.output(IN4, GPIO.LOW)
+
+
+def turn_left_90(speed_A=100, speed_B=0):
+	set_speed(pwm_A, speed_A)
+	set_speed(pwm_B, speed_B)
+	GPIO.output(IN1, GPIO.HIGH)
+	GPIO.output(IN2, GPIO.LOW)
+	GPIO.output(IN3, GPIO.LOW)
+	GPIO.output(IN4, GPIO.LOW)
 print("FIUMMMMMMMMMMMMMMMMMMBA")
 
-
+'''
 try:
     #print("Usa las flechas del teclado para controlar el robot. Presiona 'q' para salir.")
     while True:
-        forward()
-   
+        if keyboard.is_pressed('up'):
+            forward(50, 50)
+        elif keyboard.is_pressed('down'):
+            backward(50, 50)
+        elif keyboard.is_pressed('left'):
+            turn_left(50, 50)
+        elif keyboard.is_pressed('right'):
+            turn_right(50, 50)
+        elif keyboard.is_pressed('q'):
+            break
+        else:
+            stop()
+        sleep(0.1)  # Pequeña pausa para evitar sobrecargar la CPU
+        turn_left(100, 100)
 except KeyboardInterrupt:
     pass  # Allow exit with Ctrl+C
 finally:
     GPIO.cleanup()  # Clean up GPIO settings
-
+'''

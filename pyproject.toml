@@ -13,7 +13,7 @@ dependencies = [
 	"pynmea2",
 	"pyserial",
 	"fastapi[standard]",
-	"geojson"
+	"geojson",
 ]
 requires-python = ">= 3.11"
 
