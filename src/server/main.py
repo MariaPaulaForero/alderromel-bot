@@ -31,7 +31,7 @@ import time
 # Global variable to control the motor state
 running = False
 motor_thread = None
-movement_mode = "control" # control, dog, map
+movement_mode = "control" # control, dog, map, path
 movement_speed = 0 # esta es la velocidad teorica a la que podemos ajustar el robot desde el frontend
 
 def control_motors(action):
@@ -97,7 +97,7 @@ async def change_movement_mode(command: CommandMode):
     print(command)
 
     # validate its control, dog or map
-    if command.movement_mode not in ["control", "dog", "map"]:
+    if command.movement_mode not in ["control", "dog", "map", "path"]:
         return {
             "status": "error",
             "message": "Invalid movement mode"
