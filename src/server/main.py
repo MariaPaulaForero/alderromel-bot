@@ -15,10 +15,15 @@ app = FastAPI()
 class Command(BaseModel):
     action: str
 
+class CommandSpeed(BaseModel):
+    movement_speed: int
+
+class CommandMode(BaseModel):
+    movement_mode: str
+
 @app.get("/")
 def read_root():
     return {"Hello": "World"}
-
 
 import threading
 import time
@@ -26,7 +31,8 @@ import time
 # Global variable to control the motor state
 running = False
 motor_thread = None
-
+movement_mode = "control" # control, dog, map
+movement_speed = 0 # esta es la velocidad teorica a la que podemos ajustar el robot desde el frontend
 
 def control_motors(action):
     global running
@@ -42,20 +48,71 @@ def control_motors(action):
         elif action == "turn_right":
             turn_right()
         elif action == "stop":
-            stop()
+            #stop()
+            stop_motors()
         else:
             stop_motors()
 
         time.sleep(0.1)  # Adjust the sleep time as needed
-
 
 def stop_motors():
     global running
     running = False
     stop()  # Ensure motors are stopped when exiting
 
+def get_current_status():
+    return {
+        "movement_mode": movement_mode,
+        "running": running,
+        "movement_speed": movement_speed
+    }
 
 # Example usage in your FastAPI endpoint
+@app.get("/current-status")
+async def current_status():
+    return {
+        "status": "success",
+        "current_status": get_current_status()
+    }
+
+# Change speed endpoint
+@app.put("/change-speed")
+async def change_speed(command: CommandSpeed):
+    print("movement_speed")
+    print(command)
+
+    global movement_speed
+    movement_speed = command.movement_speed
+
+    return {
+            "status": "success",
+            "speed": movement_speed,
+            "current_status": get_current_status()
+        }
+
+# Change movementMode endpoint
+@app.put("/change-mode")
+async def change_movement_mode(command: CommandMode):
+    print("movement_mode")
+    print(command)
+
+    # validate its control, dog or map
+    if command.movement_mode not in ["control", "dog", "map"]:
+        return {
+            "status": "error",
+            "message": "Invalid movement mode"
+        }
+
+    global movement_mode
+    movement_mode = command.movement_mode
+
+    return {
+            "status": "success",
+            "mode": movement_mode,
+            "current_status": get_current_status()
+        }
+
+# Control bot endpoint
 @app.post("/control-robot")
 async def control_robot(command: Command):
     print("control_robot")
@@ -65,7 +122,11 @@ async def control_robot(command: Command):
     action = command.action.lower()
 
     if (is_simulation_mode):
-        return {"status": "success", "action": action}
+        return {
+            "status": "success",
+            "action": action,
+            "current_status": get_current_status()
+        }
 
     # Stop any ongoing motor control before starting a new one
     if motor_thread is not None and motor_thread.is_alive():
@@ -76,8 +137,11 @@ async def control_robot(command: Command):
     motor_thread = threading.Thread(target=control_motors, args=(action,))
     motor_thread.start()
 
-    return {"status": "success", "action": action}
-
+    return {
+            "status": "success",
+            "action": action,
+            "current_status": get_current_status()
+        }
 
 @app.websocket('/current-location')
 async def current_location(websocket: WebSocket):
@@ -93,7 +157,7 @@ async def current_location(websocket: WebSocket):
         await websocket.send_json({
             "coordinates": gps_point,
             "orientation": gps_location['orientation'],
-            "speed": gps_location['speed']
+            "speed": gps_location['speed'], # a diferencia de la velocidad teorica, esta es la velocidad del GPS, no se ajusta, se mide
         })
 
 @app.websocket("/socket-camera")
