@@ -31,12 +31,12 @@ min_square_size = 67
 max_square_size = 168
 
 def dogStep():
-
+    print("console.log del dogStep")
     (grabbed, frame) = camera.read()
-
+    print("console.log del dogStepxxx")
     if not grabbed:
         return False
-
+    print("Arzolay trick")
     frame = imutils.resize(frame, width=600)
     hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
 

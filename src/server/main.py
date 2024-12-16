@@ -40,24 +40,35 @@ def control_motors(action):
     global running
     running = True
 
-    while True:
+    while running:
+        '''
         if (movement_mode == "dog"):
+            print("antes del dog step")
             dogStep()
-        else:          
-            if action == "forward":
-                forward(movement_speed, movement_speed)
-            elif action == "backward":
-                backward(movement_speed, movement_speed)
-            elif action == "turn_left":
-                turn_left(movement_speed, 0)
-            elif action == "turn_right":
-                turn_right(0, movement_speed)
-            elif action == "stop":
-                #stop()
-                stop_motors()
-            else:
-                stop_motors()
-            time.sleep(0.1)  # Adjust the sleep time as needed
+            print("despues del dog step")
+    
+        else:
+        '''          
+        if action == "forward":
+            forward(movement_speed, movement_speed)
+        elif action == "backward":
+            backward(movement_speed, movement_speed)
+        elif action == "turn_left":
+            turn_left(movement_speed, 0)
+        elif action == "turn_right":
+            turn_right(0, movement_speed)
+        elif action == "stop":
+            #stop()
+            stop_motors()
+        else:
+            stop_motors()
+        time.sleep(0.1)  # Adjust the sleep time as needed
+
+def dog_control():
+    global running
+    running = True
+    while running:
+        dogStep()
 
 def stop_motors():
     global running
@@ -99,7 +110,8 @@ async def change_speed(command: CommandSpeed):
 async def change_movement_mode(command: CommandMode):
     print("movement_mode")
     print(command)
-
+    global motor_thread
+    
     # validate its control, dog or map
     if command.movement_mode not in ["control", "dog", "map", "path"]:
         return {
@@ -109,6 +121,16 @@ async def change_movement_mode(command: CommandMode):
 
     global movement_mode
     movement_mode = command.movement_mode
+
+    # Stop any ongoing motor control before starting a new one
+    if motor_thread is not None and motor_thread.is_alive():
+        stop_motors()
+        motor_thread.join()  # Wait for the thread to finish
+
+    if (movement_mode == "dog"):
+        # Start a new thread to control the motors
+        motor_thread = threading.Thread(target=dog_control)
+        motor_thread.start()
 
     return {
             "status": "success",
@@ -137,9 +159,10 @@ async def control_robot(command: Command):
         stop_motors()
         motor_thread.join()  # Wait for the thread to finish
 
-    # Start a new thread to control the motors
-    motor_thread = threading.Thread(target=control_motors, args=(action,))
-    motor_thread.start()
+    if (movement_mode == "control"):
+        # Start a new thread to control the motors
+        motor_thread = threading.Thread(target=control_motors, args=(action,))
+        motor_thread.start()
 
     return {
             "status": "success",
