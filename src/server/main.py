@@ -10,6 +10,7 @@ from gps.main import get_gps_location
 from camera.main import get_image
 from constants import is_simulation_mode, simulated_base64_image
 from motor.engine_test import backward, forward, turn_left, turn_right, stop
+from motor.ball_follower import dogStep
 
 app = FastAPI()
 
@@ -39,22 +40,24 @@ def control_motors(action):
     global running
     running = True
 
-    while running:
-        if action == "forward":
-            forward(movement_speed, movement_speed)
-        elif action == "backward":
-            backward(movement_speed, movement_speed)
-        elif action == "turn_left":
-            turn_left(movement_speed, 0)
-        elif action == "turn_right":
-            turn_right(0, movement_speed)
-        elif action == "stop":
-            #stop()
-            stop_motors()
-        else:
-            stop_motors()
-
-        time.sleep(0.1)  # Adjust the sleep time as needed
+    while True:
+        if (movement_mode == "dog"):
+            dogStep()
+        else:          
+            if action == "forward":
+                forward(movement_speed, movement_speed)
+            elif action == "backward":
+                backward(movement_speed, movement_speed)
+            elif action == "turn_left":
+                turn_left(movement_speed, 0)
+            elif action == "turn_right":
+                turn_right(0, movement_speed)
+            elif action == "stop":
+                #stop()
+                stop_motors()
+            else:
+                stop_motors()
+            time.sleep(0.1)  # Adjust the sleep time as needed
 
 def stop_motors():
     global running

@@ -30,11 +30,12 @@ print_interval = 2  # Intervalo de impresión en segundos
 min_square_size = 67
 max_square_size = 168
 
-while True:
+def dogStep():
+
     (grabbed, frame) = camera.read()
 
     if not grabbed:
-        break
+        return False
 
     frame = imutils.resize(frame, width=600)
     hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
@@ -125,17 +126,16 @@ while True:
                         print(diameter_in_pixels)
                         forward()
                     
-                             
+                            
                 last_print_time = time.time()
 
     # Mostrar los resultados
     # cv2.imshow("Frame", frame)
-    # cv2.imshow("Mask", mask)
+    # cv2.imshow("Mask", mask)  
 
-    key = cv2.waitKey(1) & 0xFF
+    # camera.release()
+    # cv2.destroyAllWindows()
 
-    if key == ord("q"):
-        break
+    return True
 
-camera.release()
-cv2.destroyAllWindows()
+    
