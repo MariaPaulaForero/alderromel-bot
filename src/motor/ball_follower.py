@@ -92,11 +92,16 @@ while True:
             # Determinar la posición de la pelota en relación al centro de la cámara
             if time.time() - last_print_time > print_interval:
                 
+                if distance < 0.50:
+                    print("Atrás")
+                    backward()
+
                 if x < camera_center[0] - 50 or x > camera_center[0] + 50:
 
                     if x < camera_center[0] - 50:  # Si la pelota está muy a la izquierda
                         turn_left()
                         print("Izquierda")
+
                     if x > camera_center[0] + 50:  # Si la pelota está muy a la derecha
                         turn_right()
                         print("Derecha")
@@ -104,10 +109,6 @@ while True:
                     if distance < 1.25 and distance > 0.50:
                         print("Listo para responder al color")
                         stop()
-
-                    if distance < 0.50:
-                        print("Atrás")
-                        backward()
 
                     if distance > 1.25:
                         print("Adelante")
