@@ -31,12 +31,11 @@ min_square_size = 67
 max_square_size = 168
 
 while True:
-    print("console.log del dogStep")
+ 
     (grabbed, frame) = camera.read()
-    print("console.log del dogStepxxx")
+ 
     if not grabbed:
         break
-    print("Arzolay trick")
     frame = imutils.resize(frame, width=600)
     hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
 
@@ -95,33 +94,25 @@ while True:
             # Determinar la posición de la pelota en relación al centro de la cámara
             if time.time() - last_print_time > print_interval:
                 
-                print(distance)
-                print(diameter_in_pixels)
-                
                 if x < camera_center[0] - 50 or x > camera_center[0] + 50:
 
                     if x < camera_center[0] - 50:  # Si la pelota está muy a la izquierda
                         turn_left()
-                        print("Auri te odio")
+                        print("Izquierda")
                     if x > camera_center[0] + 50:  # Si la pelota está muy a la derecha
                         turn_right()
-                        print("Paula te odio")
+                        print("Derecha")
                 else:
                     if distance < 1.25 and distance > 0.50:
                         print("Listo para responder al color")
-                        print(distance)
                         stop()
 
                     if distance < 0.50:
                         print("Atrás")
-                        print(distance)
-                        print(diameter_in_pixels)
                         backward()
 
                     if distance > 1.25:
                         print("Adelante")
-                        print(distance)
-                        print(diameter_in_pixels)
                         forward()
                 
                 last_print_time = time.time()
