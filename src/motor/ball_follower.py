@@ -62,8 +62,6 @@ while True:
     top_left_max = (camera_center[0] - max_square_size // 2, camera_center[1] - max_square_size // 2)
     bottom_right_max = (camera_center[0] + max_square_size // 2, camera_center[1] + max_square_size // 2)
     cv2.rectangle(frame, top_left_max, bottom_right_max, (255, 255, 255), 2)  # Cuadrado grande en blanco
-
-    print(len(cnts))
     
     if(len(cnts) == 0):
         stop()
