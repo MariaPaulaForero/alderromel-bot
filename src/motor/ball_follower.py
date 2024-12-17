@@ -24,7 +24,7 @@ def get_distance(diameter_in_pixels):
 
 # Variables para controlar el tiempo de impresión
 last_print_time = time.time()
-print_interval = 2  # Intervalo de impresión en segundos
+print_interval = 1  # Intervalo de impresión en segundos
 
 # Tamaño del cuadrado
 min_square_size = 67
