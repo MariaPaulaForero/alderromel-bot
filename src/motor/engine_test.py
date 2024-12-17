@@ -122,7 +122,7 @@ def turn_left(speed_A=100, speed_B=0):
 	GPIO.output(IN3, GPIO.LOW)
 	GPIO.output(IN4, GPIO.LOW)
 
-def turn_right_90(speed_A=0, speed_B=100):
+def turn_right_dog(speed_A=50, speed_B=100):
 	set_speed(pwm_A, speed_A)
 	set_speed(pwm_B, speed_B)
 	GPIO.output(IN1, GPIO.LOW)
@@ -131,7 +131,7 @@ def turn_right_90(speed_A=0, speed_B=100):
 	GPIO.output(IN4, GPIO.LOW)
 
 
-def turn_left_90(speed_A=100, speed_B=0):
+def turn_left_dog(speed_A=100, speed_B=50):
 	set_speed(pwm_A, speed_A)
 	set_speed(pwm_B, speed_B)
 	GPIO.output(IN1, GPIO.HIGH)

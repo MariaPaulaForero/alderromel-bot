@@ -2,7 +2,7 @@ import cv2
 import numpy as np
 import imutils
 import time
-from motor.engine_test import backward, forward, turn_left, turn_right, stop
+from motor.engine_test import backward, forward, turn_left_dog, turn_right_dog, stop
 
 # Rango de color para el verde (ajustar según sea necesario)
 greenLower = (40, 108, 80)
@@ -99,11 +99,11 @@ while True:
                 if x < camera_center[0] - 50 or x > camera_center[0] + 50:
 
                     if x < camera_center[0] - 50:  # Si la pelota está muy a la izquierda
-                        turn_left()
+                        turn_left_dog()
                         print("Izquierda")
 
                     if x > camera_center[0] + 50:  # Si la pelota está muy a la derecha
-                        turn_right()
+                        turn_right_dog()
                         print("Derecha")
                 else:
                     if distance < 1.25 and distance > 0.50:
