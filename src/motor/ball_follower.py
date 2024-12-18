@@ -9,7 +9,8 @@ greenLower = (40, 108, 80)
 greenUpper = (255, 255, 255)
 
 # Inicializa la cámara
-camera = cv2.VideoCapture(0)
+
+#camera = cv2.VideoCapture(0)
 
 # Parámetros de calibración
 REAL_DIAMETER = 0.14  # Diámetro real de la pelota en metros (ajustar según el objeto)
@@ -30,12 +31,12 @@ print_interval = 1  # Intervalo de impresión en segundos
 min_square_size = 67
 max_square_size = 168
 
-while True:
- 
+def dogStep(camera):
+    global last_print_time
     (grabbed, frame) = camera.read()
  
     if not grabbed:
-        break
+        return False
     frame = imutils.resize(frame, width=600)
     hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
 
@@ -88,7 +89,7 @@ while True:
             distance = get_distance(diameter_in_pixels)
             cv2.putText(frame, f"Distance: {distance:.2f} m", (int(x) - 70, int(y) - 40), 
                         cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 255, 255), 2)
-
+            print(last_print_time)
             # Determinar la posición de la pelota en relación al centro de la cámara
             if time.time() - last_print_time > print_interval:
                 
@@ -119,7 +120,10 @@ while True:
     key = cv2.waitKey(1) & 0xFF
 
     if key == ord("q"):
-        break
+        return False
 
-camera.release()
-cv2.destroyAllWindows()
+    return True
+
+
+# camera.release()
+# cv2.destroyAllWindows()

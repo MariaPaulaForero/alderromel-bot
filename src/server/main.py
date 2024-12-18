@@ -11,8 +11,10 @@ from camera.main import get_image
 from constants import is_simulation_mode, simulated_base64_image
 from motor.engine_test import backward, forward, turn_left, turn_right, stop
 from motor.ball_follower import dogStep
+import cv2
 
 app = FastAPI()
+camera = cv2.VideoCapture(0)
 
 class Command(BaseModel):
     action: str
@@ -64,11 +66,18 @@ def control_motors(action):
             stop_motors()
         time.sleep(0.1)  # Adjust the sleep time as needed
 
-def dog_control():
+def dog_control(camera):
     global running
     running = True
+
+    print("running dog_control")
+  
     while running:
-        dogStep()
+      print("runnign dog_control")  
+      aux = dogStep(camera)
+      if (aux == False):
+        stop_motors()
+        break
 
 def stop_motors():
     global running
@@ -108,6 +117,7 @@ async def change_speed(command: CommandSpeed):
 # Change movementMode endpoint
 @app.put("/change-mode")
 async def change_movement_mode(command: CommandMode):
+    global camera
     print("movement_mode")
     print(command)
     global motor_thread
@@ -129,7 +139,7 @@ async def change_movement_mode(command: CommandMode):
 
     if (movement_mode == "dog"):
         # Start a new thread to control the motors
-        motor_thread = threading.Thread(target=dog_control)
+        motor_thread = threading.Thread(target=dog_control, args=(camera,))
         motor_thread.start()
 
     return {
@@ -189,13 +199,14 @@ async def current_location(websocket: WebSocket):
 
 @app.websocket("/socket-camera")
 async def websocket_kamavinga(websocket: WebSocket):
+    global camera
     await websocket.accept()
     
     width, height = 640, 500
 
     try:
         while True:
-            image = get_image()
+            image = get_image(camera)
             await websocket.send_text(image)
             await asyncio.sleep(0.05)  # Controla la tasa de envío
     except Exception as e:

@@ -8,12 +8,12 @@ description = "Bot aldemarromel :D"
 readme = "README.md"
 version = "0.1.0"
 dependencies = [
-	"RPi.GPIO >= 0.7.1",
 	"protobuf >= 3.20.0",
 	"pynmea2",
 	"pyserial",
 	"fastapi[standard]",
 	"geojson",
+  "imutils"
 ]
 requires-python = ">= 3.10"
 
