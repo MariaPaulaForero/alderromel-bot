@@ -64,10 +64,12 @@ else:
 
         @staticmethod
         def setup(pin, mode):
+            print("Mock: Pin {} set up as {}".format(pin, mode))
             pass
 
         @staticmethod
         def output(pin, state):
+            print("Mock: Output pin {} set to {}".format(pin, state))
             pass
 
         @staticmethod
@@ -138,6 +140,7 @@ def turn_left_dog(speed_A=100, speed_B=50):
 	GPIO.output(IN2, GPIO.LOW)
 	GPIO.output(IN3, GPIO.HIGH)
 	GPIO.output(IN4, GPIO.LOW)
+
 print("FIUMMMMMMMMMMMMMMMMMMBA")
 
 '''
