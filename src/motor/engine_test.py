@@ -64,12 +64,10 @@ else:
 
         @staticmethod
         def setup(pin, mode):
-            print("Mock: Pin {} set up as {}".format(pin, mode))
             pass
 
         @staticmethod
         def output(pin, state):
-            print("Mock: Output pin {} set to {}".format(pin, state))
             pass
 
         @staticmethod
@@ -86,6 +84,7 @@ def set_speed(motor_pwm, speed):
     motor_pwm.ChangeDutyCycle(speed)
 def forward(speed_A=100, speed_B=100):
     """Set motors to move forward."""
+    print('motors move forward')
     set_speed(pwm_A, speed_A)
     set_speed(pwm_B, speed_B)
     GPIO.output(IN1, GPIO.HIGH)
@@ -94,6 +93,7 @@ def forward(speed_A=100, speed_B=100):
     GPIO.output(IN4, GPIO.LOW)
 def backward(speed_A=100, speed_B=100):
     """Set motors to move backward."""
+    print('motors move backward')
     set_speed(pwm_A, 100)
     set_speed(pwm_B, 100)
     GPIO.output(IN1, GPIO.LOW)
@@ -102,6 +102,7 @@ def backward(speed_A=100, speed_B=100):
     GPIO.output(IN4, GPIO.HIGH)
 def stop():
     """Stop the motors."""
+    print('motors stop')
     set_speed(pwm_A, 0)
     set_speed(pwm_B, 0)
     GPIO.output(IN1, GPIO.LOW)
@@ -110,36 +111,40 @@ def stop():
     GPIO.output(IN4, GPIO.LOW)
     
 def turn_right(speed_A=0, speed_B=100):
-	set_speed(pwm_A, speed_A)
-	set_speed(pwm_B, speed_B)
-	GPIO.output(IN1, GPIO.LOW)
-	GPIO.output(IN2, GPIO.LOW)
-	GPIO.output(IN3, GPIO.HIGH)
-	GPIO.output(IN4, GPIO.LOW)
+    print('motors turn right')
+    set_speed(pwm_A, speed_A)
+    set_speed(pwm_B, speed_B)
+    GPIO.output(IN1, GPIO.LOW)
+    GPIO.output(IN2, GPIO.LOW)
+    GPIO.output(IN3, GPIO.HIGH)
+    GPIO.output(IN4, GPIO.LOW)
+
 def turn_left(speed_A=100, speed_B=0):
-	set_speed(pwm_A, speed_A)
-	set_speed(pwm_B, speed_B)
-	GPIO.output(IN1, GPIO.HIGH)
-	GPIO.output(IN2, GPIO.LOW)
-	GPIO.output(IN3, GPIO.LOW)
-	GPIO.output(IN4, GPIO.LOW)
+    print('motors turn left')
+    set_speed(pwm_A, speed_A)
+    set_speed(pwm_B, speed_B)
+    GPIO.output(IN1, GPIO.HIGH)
+    GPIO.output(IN2, GPIO.LOW)
+    GPIO.output(IN3, GPIO.LOW)
+    GPIO.output(IN4, GPIO.LOW)
 
 def turn_right_dog(speed_A=50, speed_B=100):
-	set_speed(pwm_A, speed_A)
-	set_speed(pwm_B, speed_B)
-	GPIO.output(IN1, GPIO.HIGH)
-	GPIO.output(IN2, GPIO.LOW)
-	GPIO.output(IN3, GPIO.HIGH)
-	GPIO.output(IN4, GPIO.LOW)
-
+    print('motors turn right dog')
+    set_speed(pwm_A, speed_A)
+    set_speed(pwm_B, speed_B)
+    GPIO.output(IN1, GPIO.HIGH)
+    GPIO.output(IN2, GPIO.LOW)
+    GPIO.output(IN3, GPIO.HIGH)
+    GPIO.output(IN4, GPIO.LOW)
 
 def turn_left_dog(speed_A=100, speed_B=50):
-	set_speed(pwm_A, speed_A)
-	set_speed(pwm_B, speed_B)
-	GPIO.output(IN1, GPIO.HIGH)
-	GPIO.output(IN2, GPIO.LOW)
-	GPIO.output(IN3, GPIO.HIGH)
-	GPIO.output(IN4, GPIO.LOW)
+    print('motors turn left dog')
+    set_speed(pwm_A, speed_A)
+    set_speed(pwm_B, speed_B)
+    GPIO.output(IN1, GPIO.HIGH)
+    GPIO.output(IN2, GPIO.LOW)
+    GPIO.output(IN3, GPIO.HIGH)
+    GPIO.output(IN4, GPIO.LOW)
 
 print("FIUMMMMMMMMMMMMMMMMMMBA")
 

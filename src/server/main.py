@@ -42,7 +42,9 @@ def control_motors(action):
     global running
     running = True
 
+    #print(f"Running state before loop: {running}", flush=True)
     while running:
+        #print(f"Starting motor control with action: {action}")
         '''
         if (movement_mode == "dog"):
             print("antes del dog step")
@@ -157,12 +159,14 @@ async def control_robot(command: Command):
     global motor_thread
     action = command.action.lower()
 
+    '''
     if (is_simulation_mode):
         return {
             "status": "success",
             "action": action,
             "current_status": get_current_status()
         }
+    '''
 
     # Stop any ongoing motor control before starting a new one
     if motor_thread is not None and motor_thread.is_alive():
