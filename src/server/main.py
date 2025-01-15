@@ -11,6 +11,8 @@ from camera.main import get_image
 from constants import is_simulation_mode, simulated_base64_image
 from motor.engine_test import backward, forward, turn_left, turn_right, stop
 from motor.ball_follower import dogStep
+from server.map_mode import calculate_distance, calculate_bearing
+import random
 import cv2
 
 app = FastAPI()
@@ -31,12 +33,27 @@ def read_root():
 
 import threading
 import time
+import math
 
 # Global variable to control the motor state
 running = False
 motor_thread = None
+aux_thread = None
 movement_mode = "control" # control, dog, map, path
 movement_speed = 100 # esta es la velocidad teorica a la que podemos ajustar el robot desde el frontend
+# haz un objeto para las coordenadas target para pasrlo por referencia a un hilo de ejecusion posteriormente
+target_coords = {
+    "latitude": 0,
+    "longitude": 0
+}
+target_orientation = 0
+
+current_coords = {
+    "latitude": 0,
+    "longitude": 0
+}
+aux_running = False # for de bug porpuses
+current_orientation = 0
 
 def control_motors(action):
     global running
@@ -81,16 +98,108 @@ def dog_control(camera):
         stop_motors()
         break
 
+def other_threat_to_generate_random_points():
+    global target_coords
+    global current_coords
+    global aux_running
+    aux_running = True
+
+    while aux_running:
+        target_coords = {
+            "latitude": random.uniform(-90, 90),
+            "longitude": random.uniform(-180, 180)
+        }
+        current_coords = {
+            "latitude": random.uniform(-90, 90),
+            "longitude": random.uniform(-180, 180)
+        }
+        if (aux_running == False):
+            break
+
+def move_in_direction_simulation(current_coords, bearing, distance):
+    # Convert bearing to radians
+    bearing_rad = math.radians(bearing)
+    velocity_in_meters = 5  # 5 m/s velocity in simulation mode
+
+    # Calculate new latitude and longitude in meters
+    new_latitude = current_coords["latitude"] + (velocity_in_meters * math.cos(bearing_rad) / 111320)  # 1 degree latitude ~ 111320 meters
+    new_longitude = current_coords["longitude"] + (velocity_in_meters * math.sin(bearing_rad) / (111320 * math.cos(math.radians(current_coords["latitude"]))))  # Adjust for longitude
+    
+    return {
+        "latitude": new_latitude,
+        "longitude": new_longitude
+    }
+
+def mapStep(target_coords, _current_coords, current_orientation):
+    global movement_speed
+    global current_coords
+
+    distance = calculate_distance(current_coords, target_coords)
+    bearing = calculate_bearing(current_coords, target_coords)
+
+    if distance < 1:  # ESTA ES LA DISTANCIA DE ERROR EN METROSSSSs
+        return None
+
+    angle_diff = (bearing - current_orientation + 360) % 360
+    if angle_diff > 180:
+        angle_diff -= 360
+
+    if abs(angle_diff) > 10:  # Threshold angle in degrees
+        if angle_diff > 0:
+            turn_right(movement_speed, 0)
+        else:
+            turn_left(0, movement_speed)
+    else:
+        forward(movement_speed, movement_speed)
+        if is_simulation_mode:
+            # Move in the direction of the current orientation
+            current_coords = move_in_direction_simulation(current_coords, current_orientation, movement_speed)
+
+    if (is_simulation_mode):
+        current_orientation = bearing
+
+    return current_orientation
+
+def map_control():
+    global running
+    global target_coords
+    global current_coords
+    global current_orientation
+    running = True
+
+    print("running map_control")
+  
+    while running:
+      print("runnign map_control")  
+      print(target_coords)
+      print(current_coords)
+      aux = mapStep(target_coords, current_coords, current_orientation)
+      if (aux == None):
+        stop_motors()
+        break
+      else:
+        if (is_simulation_mode):
+            current_orientation = aux
+
 def stop_motors():
     global running
     running = False
     stop()  # Ensure motors are stopped when exiting
 
+def stop_aux():
+    global aux_running
+    aux_running = False
+
 def get_current_status():
     return {
         "movement_mode": movement_mode,
         "running": running,
-        "movement_speed": movement_speed
+        "movement_speed": movement_speed,
+        "target_coords": {
+            "latitude": target_coords["latitude"],
+            "longitude": target_coords["longitude"]
+        },
+        "target_orientation": target_orientation
     }
 
 # Example usage in your FastAPI endpoint
@@ -123,6 +232,8 @@ async def change_movement_mode(command: CommandMode):
     print("movement_mode")
     print(command)
     global motor_thread
+    global aux_thread
+    global target_coords
     
     # validate its control, dog or map
     if command.movement_mode not in ["control", "dog", "map", "path"]:
@@ -139,14 +250,45 @@ async def change_movement_mode(command: CommandMode):
         stop_motors()
         motor_thread.join()  # Wait for the thread to finish
 
+    if aux_thread is not None and aux_thread.is_alive():
+        stop_aux()
+        aux_thread.join()  # Wait for the thread to finish
+
     if (movement_mode == "dog"):
         # Start a new thread to control the motors
         motor_thread = threading.Thread(target=dog_control, args=(camera,))
         motor_thread.start()
 
+    # map mode
+    if (movement_mode == "map"):
+        # Start a new thread to control the motors
+        # Crea unac oordenad alteatoria para que sea el nuevo target
+        target_coords = {
+            "latitude": random.uniform(-90, 90),
+            "longitude": random.uniform(-180, 180)
+        }
+        motor_thread = threading.Thread(target=map_control)
+        motor_thread.start()
+        #aux_thread = threading.Thread(target=other_threat_to_generate_random_points)
+        #aux_thread.start()
+
     return {
             "status": "success",
             "mode": movement_mode,
+            "current_status": get_current_status()
+        }
+
+@app.put("/change-target")
+async def change_target(command: Command):
+    print("change_target")
+    print(command)
+
+    global target_coords
+    target_coords = command.target_coords
+
+    return {
+            "status": "success",
+            "target_coords": target_coords,
             "current_status": get_current_status()
         }
 
@@ -186,6 +328,8 @@ async def control_robot(command: Command):
 
 @app.websocket('/current-location')
 async def current_location(websocket: WebSocket):
+    global current_coords
+    global current_orientation
     await websocket.accept()
     # Raspberry gps
 
@@ -193,11 +337,16 @@ async def current_location(websocket: WebSocket):
         gps_location = get_gps_location()
 
         gps_point = Point((gps_location['lng'], gps_location['lat']))
-            
+        current_coords = {
+            "latitude": gps_location['lat'],
+            "longitude": gps_location['lng']
+        }
+        current_orientation = gps_location['orientation']
+
         await asyncio.sleep(1)
         await websocket.send_json({
             "coordinates": gps_point,
-            "orientation": gps_location['orientation'],
+            "orientation": current_orientation,
             "speed": gps_location['speed'], # a diferencia de la velocidad teorica, esta es la velocidad del GPS, no se ajusta, se mide
         })
 
