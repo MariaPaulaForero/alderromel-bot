@@ -59,6 +59,8 @@ def get_orientation():
     heading = compute_heading(x, y)
     
     print(f"Heading: {heading:.2f}°")
+
+    return heading
     
 
   
