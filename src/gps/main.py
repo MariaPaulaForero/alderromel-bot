@@ -49,7 +49,7 @@ def get_gps_location():
 		global last_known_location
 
 		orientation = get_orientation()
-
+		print("Orientation: ", orientation)
 		if msg.sentence_type == 'RMC':
 			print('Mensaje: ' + msg)
 		dic={
