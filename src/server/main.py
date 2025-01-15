@@ -27,6 +27,10 @@ class CommandSpeed(BaseModel):
 class CommandMode(BaseModel):
     movement_mode: str
 
+class CommandChangeTarget(BaseModel):
+    latitude: int
+    longitude: int
+
 @app.get("/")
 def read_root():
     return {"Hello": "World"}
@@ -279,12 +283,15 @@ async def change_movement_mode(command: CommandMode):
         }
 
 @app.put("/change-target")
-async def change_target(command: Command):
+async def change_target(command: CommandChangeTarget):
     print("change_target")
     print(command)
 
     global target_coords
-    target_coords = command.target_coords
+    target_coords = {
+        "latitude": command.latitude,
+        "longitude": command.longitude
+    }
 
     return {
             "status": "success",
