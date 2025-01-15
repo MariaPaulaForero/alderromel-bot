@@ -175,8 +175,9 @@ def map_control():
   
     while running:
       print("runnign map_control")  
-      print(target_coords)
-      print(current_coords)
+      print("---> target", target_coords)
+      print("---> current", current_coords)
+      print("---> orientation", current_orientation)
       aux = mapStep(target_coords, current_coords, current_orientation)
       if (aux == None):
         stop_motors()
@@ -267,10 +268,10 @@ async def change_movement_mode(command: CommandMode):
     if (movement_mode == "map"):
         # Start a new thread to control the motors
         # Crea unac oordenad alteatoria para que sea el nuevo target
-        target_coords = {
-            "latitude": random.uniform(-90, 90),
-            "longitude": random.uniform(-180, 180)
-        }
+        #target_coords = {
+        #    "latitude": random.uniform(-90, 90),
+        #    "longitude": random.uniform(-180, 180)
+        #}
         motor_thread = threading.Thread(target=map_control)
         motor_thread.start()
         #aux_thread = threading.Thread(target=other_threat_to_generate_random_points)
