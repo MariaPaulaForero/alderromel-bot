@@ -150,9 +150,9 @@ def mapStep(target_coords, _current_coords, current_orientation):
 
     if abs(angle_diff) > 10:  # Threshold angle in degrees
         if angle_diff > 0:
-            turn_right(movement_speed, 0)
+            turn_right(0, movement_speed)
         else:
-            turn_left(0, movement_speed)
+            turn_left(movement_speed, 0)
     else:
         forward(movement_speed, movement_speed)
         if is_simulation_mode:
