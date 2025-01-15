@@ -13,7 +13,8 @@ dependencies = [
 	"pyserial",
 	"fastapi[standard]",
 	"geojson",
-  "imutils"
+	"smbus2",
+    "imutils"
 ]
 requires-python = ">= 3.10"
 
