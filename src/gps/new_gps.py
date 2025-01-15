@@ -1,6 +1,7 @@
 import smbus2
 import time
 import math
+from constants import is_simulation_mode
 
 # HMC5883L register addresses
 ADDRESS = 0x1E
@@ -11,7 +12,8 @@ X_MSB = 0x03
 Z_MSB = 0x05
 Y_MSB = 0x07
 
-bus = smbus2.SMBus(1)
+if (is_simulation_mode == False):
+    bus = smbus2.SMBus(1)
 
 def setup():
     bus.write_byte_data(ADDRESS, CONFIG_A, 0x70)  # Set to 8 samples @ 15Hz
@@ -51,6 +53,9 @@ def compute_heading(x, y):
     return heading_deg
 
 def get_orientation():
+    if (is_simulation_mode):
+        return 0
+
     setup()
     
     x = read_raw_data(X_MSB)
