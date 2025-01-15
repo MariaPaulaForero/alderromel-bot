@@ -6,6 +6,7 @@ import string
 import pynmea2
 from constants import is_simulation_mode
 import random
+from gps.new_gps import get_orientation
 
 
 last_known_location={
@@ -46,12 +47,15 @@ def get_gps_location():
 		line=sio.readline()
 		msg=pynmea2.parse(line)
 		global last_known_location
+
+		orientation = get_orientation()
+
 		if msg.sentence_type == 'RMC':
 			print('Mensaje: ' + msg)
 		dic={
 			'lat': msg.latitude,
 			'lng': msg.longitude,
-			'orientation': msg.true_course if msg.sentence_type == 'RMC' else last_known_location['orientation'],
+			'orientation': orientation if orientation else last_known_location['orientation'],
 			'speed': msg.spd_over_grnd if msg.sentence_type == 'RMC' else last_known_location['speed']
 		}
 		print(dic)

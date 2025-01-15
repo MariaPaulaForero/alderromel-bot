@@ -50,19 +50,16 @@ def compute_heading(x, y):
     
     return heading_deg
 
-def main():
+def get_orientation():
     setup()
     
-    while True:
-        x = read_raw_data(X_MSB)
-        y = read_raw_data(Y_MSB)
-        z = read_raw_data(Z_MSB)
-        
-        heading = compute_heading(x, y)
-        
-        print(f"X: {x} uT, Y: {y} uT, Z: {z} uT, Heading: {heading:.2f}°")
-        
-        time.sleep(0.5)
+    x = read_raw_data(X_MSB)
+    y = read_raw_data(Y_MSB)
+    
+    heading = compute_heading(x, y)
+    
+    print(f"Heading: {heading:.2f}°")
+    
 
-if __name__ == "__main__":
-    main()
+  
+
