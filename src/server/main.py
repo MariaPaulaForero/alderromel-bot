@@ -14,6 +14,7 @@ from motor.ball_follower import dogStep
 from server.map_mode import calculate_distance, calculate_bearing
 import random
 import cv2
+import json
 
 app = FastAPI()
 camera = cv2.VideoCapture(0)
@@ -28,8 +29,7 @@ class CommandMode(BaseModel):
     movement_mode: str
 
 class CommandChangeTarget(BaseModel):
-    latitude: int
-    longitude: int
+    data: str # {longitude,latitude} in JSON
 
 @app.get("/")
 def read_root():
@@ -288,9 +288,10 @@ async def change_target(command: CommandChangeTarget):
     print(command)
 
     global target_coords
+    new_target = json.loads(command.data)
     target_coords = {
-        "latitude": command.latitude,
-        "longitude": command.longitude
+        "latitude": new_target["latitude"],
+        "longitude": new_target["longitude"]
     }
 
     return {
