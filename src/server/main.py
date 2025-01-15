@@ -140,6 +140,8 @@ def mapStep(target_coords, _current_coords, current_orientation):
 
     distance = calculate_distance(current_coords, target_coords)
     bearing = calculate_bearing(current_coords, target_coords)
+    #bearing print
+    print("Bearing: ", bearing)
 
     if distance < 1:  # ESTA ES LA DISTANCIA DE ERROR EN METROSSSSs
         return None
