@@ -19,6 +19,8 @@ def setup():
     bus.write_byte_data(ADDRESS, MODE, 0x01, True)  # Single measurement mode
 
 def measure():
+    bus.write_byte_data(ADDRESS, MODE, 0x01, True)  # Single measurement mode
+
     # Wait for the measurement to be ready
     while bus.read_byte_data(ADDRESS, STATUS) & 0x01 == 0:
         time.sleep(0.01)
