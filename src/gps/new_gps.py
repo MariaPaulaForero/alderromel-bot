@@ -16,9 +16,9 @@ if (is_simulation_mode == False):
     bus = smbus2.SMBus(1)
 
 def setup():
-    bus.write_byte_data(ADDRESS, CONFIG_A, 0x70)  # Set to 8 samples @ 15Hz
-    bus.write_byte_data(ADDRESS, CONFIG_B, 0x20)  # 1.3 gain LSb / Gauss 1090 (default)
-    bus.write_byte_data(ADDRESS, MODE, 0x00)  # Continuous measurement mode
+    bus.write_byte_data(ADDRESS, CONFIG_A, 0x78, True)  # Set to 8 samples @ 75Hz
+    bus.write_byte_data(ADDRESS, CONFIG_B, 0x20, True)  # 1.3 gain LSb / Gauss 1090 (default)
+    bus.write_byte_data(ADDRESS, MODE, 0x00, True)  # Continuous measurement mode
 
 def read_raw_data(addr):
     # Read raw 16-bit value
