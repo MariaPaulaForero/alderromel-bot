@@ -8,17 +8,27 @@ ADDRESS = 0x1E
 CONFIG_A = 0x00
 CONFIG_B = 0x01
 MODE = 0x02
+STATUS = 0x09
 X_MSB = 0x03
 Z_MSB = 0x05
 Y_MSB = 0x07
 
-if (is_simulation_mode == False):
-    bus = smbus2.SMBus(1)
-
 def setup():
-    bus.write_byte_data(ADDRESS, CONFIG_A, 0x78, True)  # Set to 8 samples @ 75Hz
+    bus.write_byte_data(ADDRESS, CONFIG_A, 0x70, True)  # Set to 8 samples @ 15Hz
     bus.write_byte_data(ADDRESS, CONFIG_B, 0x20, True)  # 1.3 gain LSb / Gauss 1090 (default)
-    bus.write_byte_data(ADDRESS, MODE, 0x00, True)  # Continuous measurement mode
+    bus.write_byte_data(ADDRESS, MODE, 0x01, True)  # Single measurement mode
+
+def measure():
+    # Wait for the measurement to be ready
+    while bus.read_byte_data(ADDRESS, STATUS) & 0x01 == 0:
+        time.sleep(0.01)
+
+    # Read the data
+    x = read_raw_data(X_MSB)
+    z = read_raw_data(Z_MSB)
+    y = read_raw_data(Y_MSB)
+
+    return x, y, z
 
 def read_raw_data(addr):
     # Read raw 16-bit value
@@ -55,18 +65,16 @@ def compute_heading(x, y):
 def get_orientation():
     if (is_simulation_mode):
         return 0
-
-    setup()
     
-    x = read_raw_data(X_MSB)
-    y = read_raw_data(Y_MSB)
+    x, y, _ = measure()
     
     heading = compute_heading(x, y)
     
     print(f"Heading: {heading:.2f}°")
 
     return heading
-    
 
-  
 
+if (is_simulation_mode == False):
+    bus = smbus2.SMBus(1)
+    setup()
