@@ -143,14 +143,14 @@ def mapStep(target_coords, _current_coords, current_orientation):
     #bearing print
     print("Bearing: ", bearing)
 
-    if distance < 1:  # ESTA ES LA DISTANCIA DE ERROR EN METROSSSSs
+    if distance < 5:  # ESTA ES LA DISTANCIA DE ERROR EN METROSSSSs
         return None
 
     angle_diff = (bearing - current_orientation + 360) % 360
     if angle_diff > 180:
         angle_diff -= 360
 
-    if abs(angle_diff) > 10:  # Threshold angle in degrees
+    if abs(angle_diff) > 25:  # Threshold angle in degrees
         if angle_diff > 0:
             turn_right(0, movement_speed)
         else:
@@ -163,6 +163,8 @@ def mapStep(target_coords, _current_coords, current_orientation):
 
     if (is_simulation_mode):
         current_orientation = bearing
+
+    time.sleep(6)
 
     return current_orientation
 
