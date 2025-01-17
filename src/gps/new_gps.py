@@ -25,6 +25,8 @@ def measure():
     while bus.read_byte_data(ADDRESS, STATUS) & 0x01 == 0:
         time.sleep(0.01)
 
+    bus.write_byte_data(ADDRESS, MODE, 0x02, True)  # Still mode forced
+
     # Read the data
     x = read_raw_data(X_MSB)
     z = read_raw_data(Z_MSB)
