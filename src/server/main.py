@@ -1,12 +1,11 @@
 from typing import Union
 import asyncio
 
-
 from fastapi import FastAPI, WebSocket
 from fastapi.testclient import TestClient
 from geojson import Point
 from pydantic import BaseModel
-from gps.main import get_gps_location
+# from gps.main import get_gps_location
 from camera.main import get_image
 from constants import is_simulation_mode, simulated_base64_image
 from motor.engine_test import backward, forward, turn_left, turn_right, stop
@@ -339,6 +338,7 @@ async def control_robot(command: Command):
             "current_status": get_current_status()
         }
 
+"""""
 @app.websocket('/current-location')
 async def current_location(websocket: WebSocket):
     global current_coords
@@ -346,6 +346,7 @@ async def current_location(websocket: WebSocket):
     await websocket.accept()
     # Raspberry gps
 
+   
     while True:
         gps_location = get_gps_location()
 
@@ -362,7 +363,7 @@ async def current_location(websocket: WebSocket):
             "orientation": current_orientation,
             "speed": gps_location['speed'], # a diferencia de la velocidad teorica, esta es la velocidad del GPS, no se ajusta, se mide
         })
-
+"""""
 @app.websocket("/socket-camera")
 async def websocket_kamavinga(websocket: WebSocket):
     global camera

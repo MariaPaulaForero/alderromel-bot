@@ -9,6 +9,7 @@ def obj_data(img):
 
 def get_image(camera):
     if (is_simulation_mode & is_cam_simulation_mode):
+ 
         return simulated_base64_image;
 
     ret, frame = camera.read()
