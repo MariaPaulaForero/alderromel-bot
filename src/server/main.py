@@ -1,7 +1,8 @@
 from typing import Union
 import asyncio
 
-from fastapi import FastAPI, WebSocket
+from fastapi import FastAPI, WebSocket, HTTPException
+
 from fastapi.testclient import TestClient
 from geojson import Point
 from pydantic import BaseModel
@@ -14,9 +15,13 @@ from server.map_mode import calculate_distance, calculate_bearing
 import random
 import cv2
 import json
+from arduino.main import ArduinoSensorInterface
 
 app = FastAPI()
 camera = cv2.VideoCapture(0)
+
+arduino = ArduinoSensorInterface()
+
 
 class Command(BaseModel):
     action: str
@@ -378,3 +383,38 @@ async def websocket_kamavinga(websocket: WebSocket):
             await asyncio.sleep(0.05)  # Controla la tasa de envío
     except Exception as e:
         print(f"Error: {e}")                
+
+
+@app.get("/sensors")
+async def get_sensor_data():
+    """
+    Endpoint para obtener datos de un sensor específico.
+    
+    Args:
+        sensor_type (str): Tipo de sensor ('tds', 'turbidez', 'todos')
+        
+    Returns:
+        dict: Valores del sensor
+  
+    valid_types = ['tds', 'turbidez', 'todos']
+    if sensor_type.lower() not in valid_types:
+        raise HTTPException(status_code=400, detail=f"Tipo de sensor no válido. Opciones: {', '.join(valid_types)}")
+    """
+
+    try:
+        print("hola")
+        data = arduino.get_sensor_data('todos')
+        if data:
+            return {
+            "status": "success",
+            "data": {
+                "turbidez": data[0],
+                "tds": data[1]
+            }
+        }
+        else:
+            raise HTTPException(status_code=500, detail="No se pudieron obtener los datos del sensor")
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+

@@ -8,9 +8,6 @@ def obj_data(img):
     image_input = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
 
 def get_image(camera):
-    if (is_simulation_mode & is_cam_simulation_mode):
- 
-        return simulated_base64_image;
 
     ret, frame = camera.read()
     #frame = cv2.resize(frame, (width, height))
